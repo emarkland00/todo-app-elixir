@@ -1,0 +1,71 @@
+services:
+  api:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      args:
+        USER_ID: ${USER_ID:-1000}
+        GROUP_ID: ${GROUP_ID:-1000}
+
+    ports:
+      - 4000:4000
+    
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - MIX_ENV=dev
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/todo_dev
+      - PGUSER=postgres
+      - PGPASSWORD=postgres
+      - PGDATABASE=todo_dev
+      - PGHOST=db
+      - PGPORT=5432
+      # This is a dummy secret key, replace it with your own
+      - SECRET_KEY_BASE=2qsLtg4Azw+j3hpIZFx5WGpAiETs9RQQh9k57cmCVq+pAuoodyw05kkZm5s1PYaF
+    volumes:
+      - exclude_api_deps:/home/api_user/app/deps
+      - exclude_api_build:/home/api_user/app/_build
+      # Explicitly excludes _build and deps directories from bind mounts
+      - ./todo/lib:/home/api_user/app/lib
+      - ./todo/priv:/home/api_user/app/priv
+      - ./todo/test:/home/api_user/app/test
+      - ./todo/entrypoint.sh:/home/api_user/app/entrypoint.sh
+      - ./todo/mix.exs:/home/api_user/app/mix.exs
+      - ./todo/mix.lock:/home/api_user/app/mix.lock
+      - ./todo/.formatter.exs:/home/api_user/app/.formatter.exs
+      - ./todo/config:/home/api_user/app/config
+
+    command:
+      - "./entrypoint.sh"
+
+
+          
+  db:
+    image: postgres:16.6-bookworm
+    user: postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=todo_dev
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 5s
+      timeout: 2s
+      retries: 5
+
+volumes:
+  db-data:
+  exclude_api_deps:
+  exclude_api_build:
+
+# Setup credits to
+# - https://medium.com/@poffdeluxe/running-elixir-in-development-with-docker-and-docker-compose-3b7b797f8703
+# - https://semaphoreci.com/community/tutorials/dockerizing-elixir-and-phoenix-applications
+# - https://elixirforum.com/t/elixir-phoenix-running-a-dev-setup-inside-docker/43269
