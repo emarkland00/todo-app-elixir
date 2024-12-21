@@ -7,6 +7,7 @@ defmodule TodoWeb.Router do
 
   scope "/api", TodoWeb do
     pipe_through :api
+    get "/", DefaultController, :index
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
