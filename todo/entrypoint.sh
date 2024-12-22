@@ -22,4 +22,8 @@ if [[ -z `psql -Atqc "\\list $PGDATABASE"` ]]; then
   echo "Database $PGDATABASE created."
 fi
 
+# Ensure assets are up to date
+mix assets.setup
+mix assets.build
+
 mix phx.server

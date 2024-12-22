@@ -1,5 +1,6 @@
 services:
   api:
+    container_name: api
     build: 
       context: .
       dockerfile: Dockerfile
@@ -27,6 +28,7 @@ services:
       - exclude_api_deps:/home/api_user/app/deps
       - exclude_api_build:/home/api_user/app/_build
       # Explicitly excludes _build and deps directories from bind mounts
+      - ./todo/assets:/home/api_user/app/assets
       - ./todo/lib:/home/api_user/app/lib
       - ./todo/priv:/home/api_user/app/priv
       - ./todo/test:/home/api_user/app/test
@@ -34,7 +36,7 @@ services:
       - ./todo/mix.exs:/home/api_user/app/mix.exs
       - ./todo/mix.lock:/home/api_user/app/mix.lock
       - ./todo/.formatter.exs:/home/api_user/app/.formatter.exs
-      - ./todo/config:/home/api_user/app/config
+      - ./todo/config:/home/api_user/app/config      
 
     command:
       - "./entrypoint.sh"
@@ -42,6 +44,7 @@ services:
 
           
   db:
+    container_name: db
     image: postgres:16.6-bookworm
     user: postgres
     volumes:

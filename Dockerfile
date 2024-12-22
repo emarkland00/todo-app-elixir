@@ -6,8 +6,10 @@ ARG GROUP_ID=1000
 
 # Prep system dependencies
 RUN apt-get update && \
-    apt-get install -y postgresql-client && \
-    apt-get install -y inotify-tools
+    apt-get install -y postgresql-client build-essential && \
+    apt-get install -y inotify-tools && \
+    apt-get install -y nodejs && \
+    curl -L https://npmjs.org/install.sh | sh
 
 # Add an api_user so files created are not owned by root
 RUN groupadd -g ${GROUP_ID} api_user
