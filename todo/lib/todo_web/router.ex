@@ -4,13 +4,14 @@ defmodule TodoWeb.Router do
   import TodoWeb.UserAuth
 
   pipeline :browser do
-    plug :accepts, ["html"]
+    plug :accepts, ["html", "json"]
     plug :fetch_session
     plug :fetch_live_flash
     plug :put_root_layout, html: {TodoWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_user
+    plug TodoWeb.Plugs.Locale, "en"
   end
 
   pipeline :api do
@@ -21,6 +22,11 @@ defmodule TodoWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+    get "/hello", HelloController, :index
+    get "/hello/:messenger", HelloController, :show
+    # resources "/posts", PostController, except: [:delete]
+
+    get "/redirect_test", PageController, :redirect_test
   end
 
   # Other scopes may use custom stacks.
