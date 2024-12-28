@@ -24,15 +24,16 @@ defmodule TodoWeb.Router do
     get "/", PageController, :home
     get "/hello", HelloController, :index
     get "/hello/:messenger", HelloController, :show
-    # resources "/posts", PostController, except: [:delete]
 
     get "/redirect_test", PageController, :redirect_test
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", TodoWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", TodoWeb do
+    pipe_through :api
+
+    resources "/todo_items", TodoItemController, except: [:new, :edit]
+  end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:todo, :dev_routes) do
