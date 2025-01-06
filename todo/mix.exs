@@ -19,7 +19,7 @@ defmodule Todo.MixProject do
   def application do
     [
       mod: {Todo.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :cors_plug]
     ]
   end
 
@@ -37,6 +37,7 @@ defmodule Todo.MixProject do
       {:phoenix_ecto, "~> 4.5"},
       {:ecto_sql, "~> 3.10"},
       {:postgrex, ">= 0.0.0"},
+      {:cors_plug, "~> 3.0"},
       {:phoenix_html, "~> 4.1"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_view, "~> 1.0.0"},
